@@ -12,8 +12,8 @@ import {
   Text,
 } from 'react-native';
 import {Picker} from '@react-native-community/picker';
-import { ADD_PROSPECT } from '../constants/prospect';
-import { carList } from './dummyData';
+import {ADD_PROSPECT} from '../constants/prospect';
+import {carList} from './dummyData';
 
 const {width, height} = Dimensions.get('window');
 const DefaultInput = ({value, label, onChangeText, children, customInput}) => {
@@ -48,14 +48,14 @@ const DefaultInput = ({value, label, onChangeText, children, customInput}) => {
 export const AddNewProspectScreen = () => {
   const dispatch = useDispatch();
 
-  const [customerName, setCustomerName] = useState('');
-  const [birthday, setBirthday] = useState('');
-  const [selectedCar, setSelectedCar] = useState(carList[0]);
-
   const mappedCarList = carList.map(car => ({
     value: car,
     label: car.name,
   }));
+
+  const [customerName, setCustomerName] = useState('');
+  const [birthday, setBirthday] = useState('');
+  const [selectedCar, setSelectedCar] = useState(mappedCarList[0]);
 
   const handleSubmit = () => {
     const payload = {
@@ -66,15 +66,15 @@ export const AddNewProspectScreen = () => {
 
     dispatch({
       type: ADD_PROSPECT,
-      payload
+      payload,
     });
-  }
+  };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#FFF'}}>
       <View>
         <Image
-          source={selectedCar.image}
+          source={selectedCar.value.image}
           style={styles.image}
           resizeMode={'contain'}
         />
@@ -99,13 +99,15 @@ export const AddNewProspectScreen = () => {
                 style={{width: width * 0.7, height: 50}}
                 selectedValue={selectedCar.value}
                 onValueChange={value =>
-                  setSelectedCar(carList.find(car => car.value === value))
+                  setSelectedCar(
+                    mappedCarList.find(car => car.value.id === value.id),
+                  )
                 }>
                 {mappedCarList.map(option => (
                   <Picker.Item
                     label={option.label}
                     value={option.value}
-                    key={option.value}
+                    key={option.value.name}
                   />
                 ))}
               </Picker>

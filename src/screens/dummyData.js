@@ -1,5 +1,6 @@
 export const carList = [
   {
+    id: 1,
     name: 'Toyota C-HR',
     edition: 'All New C-HR Single Tone',
     manufacturer: 'Toyota',
@@ -18,6 +19,7 @@ export const carList = [
     textColor: '#fff',
   },
   {
+    id: 2,
     name: 'Honda Civic',
     edition: 'Honda Civic Sedan 1,5L VTEC Turbo',
     manufacturer: 'Honda',
@@ -36,6 +38,7 @@ export const carList = [
     textColor: '#222',
   },
   {
+    id: 3,
     name: 'Mazda CX-3',
     edition: 'CX-3 Sport',
     manufacturer: 'Mazda',
