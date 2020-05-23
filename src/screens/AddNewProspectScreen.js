@@ -59,9 +59,10 @@ export const AddNewProspectScreen = () => {
 
   const handleSubmit = () => {
     const payload = {
+      id: Math.random(),
       customerName,
       birthday,
-      car: selectedCar,
+      car: selectedCar.value,
     };
 
     dispatch({
