@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {
   View,
@@ -11,6 +12,8 @@ import {
   Text,
 } from 'react-native';
 import {Picker} from '@react-native-community/picker';
+import { ADD_PROSPECT } from '../constants/prospect';
+import { carList } from './dummyData';
 
 const {width, height} = Dimensions.get('window');
 const DefaultInput = ({value, label, onChangeText, children, customInput}) => {
@@ -43,16 +46,29 @@ const DefaultInput = ({value, label, onChangeText, children, customInput}) => {
 };
 
 export const AddNewProspectScreen = () => {
+  const dispatch = useDispatch();
+
   const [customerName, setCustomerName] = useState('');
   const [birthday, setBirthday] = useState('');
   const [selectedCar, setSelectedCar] = useState(carList[0]);
 
   const mappedCarList = carList.map(car => ({
-    value: car.value,
+    value: car,
     label: car.name,
   }));
 
-  console.log('car options', mappedCarList);
+  const handleSubmit = () => {
+    const payload = {
+      customerName,
+      birthday,
+      car: selectedCar,
+    };
+
+    dispatch({
+      type: ADD_PROSPECT,
+      payload
+    });
+  }
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#FFF'}}>
@@ -96,7 +112,7 @@ export const AddNewProspectScreen = () => {
             }
           />
         </View>
-        <Button title="Save Prospect" onPress={() => console.log('pressed')} />
+        <Button title="Save Prospect" onPress={handleSubmit} />
       </View>
     </SafeAreaView>
   );
@@ -121,7 +137,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const carList = [
+/*const carList = [
   {
     name: 'Toyota C-HR',
     edition: 'All New C-HR Single Tone',
@@ -170,4 +186,4 @@ const carList = [
     image: require('../assets/images/mazda-cx3.jpg'),
     value: 'Mazda CX-3',
   },
-];
+];*/
