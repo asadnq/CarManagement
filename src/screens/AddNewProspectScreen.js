@@ -11,6 +11,7 @@ import {
   Text,
 } from 'react-native';
 import {Picker} from '@react-native-community/picker';
+import {carList} from './dummyData';
 
 // TODO: Tailor the prospect data so its easy to implement redux
 const {width, height} = Dimensions.get('window');
@@ -44,14 +45,15 @@ const DefaultInput = ({value, label, onChangeText, children, customInput}) => {
 };
 
 export const AddNewProspectScreen = () => {
-  const [customerName, setCustomerName] = useState('');
-  const [birthday, setBirthday] = useState('');
-  const [selectedCar, setSelectedCar] = useState(carList[0]);
-
   const mappedCarList = carList.map(car => ({
-    value: car.value,
+    value: car,
     label: car.name,
   }));
+  
+  const [customerName, setCustomerName] = useState('');
+
+  const [birthday, setBirthday] = useState('');
+  const [selectedCar, setSelectedCar] = useState(mappedCarList[0]);
 
   console.log('car options', mappedCarList);
 
@@ -59,7 +61,7 @@ export const AddNewProspectScreen = () => {
     <SafeAreaView style={{flex: 1, backgroundColor: '#FFF'}}>
       <View>
         <Image
-          source={selectedCar.image}
+          source={selectedCar.value.image}
           style={styles.image}
           resizeMode={'contain'}
         />
@@ -84,13 +86,13 @@ export const AddNewProspectScreen = () => {
                 style={{width: width * 0.7, height: 50}}
                 selectedValue={selectedCar.value}
                 onValueChange={value =>
-                  setSelectedCar(carList.find(car => car.value === value))
+                  setSelectedCar(mappedCarList.find(car => car.value.id === value.id))
                 }>
                 {mappedCarList.map(option => (
                   <Picker.Item
                     label={option.label}
                     value={option.value}
-                    key={option.value}
+                    key={option.value.id}
                   />
                 ))}
               </Picker>
@@ -122,53 +124,3 @@ const styles = StyleSheet.create({
   },
 });
 
-const carList = [
-  {
-    name: 'Toyota C-HR',
-    edition: 'All New C-HR Single Tone',
-    manufacturer: 'Toyota',
-    year: 2020,
-    engine: '1.8 L 2ZR-FBE I4',
-    specification: {
-      transmission: 'Otomatis',
-      fuel: 'Bensin',
-      engine: '1800 cc',
-      seat: 5,
-    },
-    price: 'IDR 509.05 - 543.79 mio',
-    image: require('../assets/images/toyota-chr.jpeg'),
-    value: 'Toyota C-HR',
-  },
-  {
-    name: 'Honda Civic',
-    edition: 'Honda Civic Sedan 1,5L VTEC Turbo',
-    manufacturer: 'Honda',
-    year: 2020,
-    engine: '2.0 L four-cylinder engine/158 horsepower',
-    specification: {
-      transmission: 'Otomatis',
-      fuel: 'Bensin',
-      engine: '1496 cc',
-      seat: 5,
-    },
-    price: 'IDR 533 mio',
-    image: require('../assets/images/honda-civic.jpg'),
-    value: 'Honda Civic',
-  },
-  {
-    name: 'Mazda CX-3',
-    edition: 'CX-3 Sport',
-    manufacturer: 'Mazda',
-    year: 2020,
-    engine: '2.0 L SkyActiv-G PE-VPS I4',
-    specification: {
-      transmission: 'Otomatis',
-      fuel: 'Bensin',
-      engine: '1998 cc',
-      seat: 5,
-    },
-    price: 'IDR 399.9 mio',
-    image: require('../assets/images/mazda-cx3.jpg'),
-    value: 'Mazda CX-3',
-  },
-];
