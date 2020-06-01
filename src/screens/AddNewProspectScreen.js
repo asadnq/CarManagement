@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import {Picker} from '@react-native-community/picker';
 
+// TODO: Tailor the prospect data so its easy to implement redux
 const {width, height} = Dimensions.get('window');
 const DefaultInput = ({value, label, onChangeText, children, customInput}) => {
   return (
