@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import IonIcons from 'react-native-vector-icons/Ionicons';
+import {useDispatch} from 'react-redux';
+// import IonIcons from 'react-native-vector-icons/Ionicons';
 import {
   View,
   SafeAreaView,
@@ -9,13 +10,25 @@ import {
   Dimensions,
   TextInput,
   Text,
+  TouchableOpacity,
 } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {Picker} from '@react-native-community/picker';
+import {format} from 'date-fns';
 import {carList} from './dummyData';
+import {actionTypes} from '../redux/modules/prospect';
 
 // TODO: Tailor the prospect data so its easy to implement redux
 const {width, height} = Dimensions.get('window');
-const DefaultInput = ({value, label, onChangeText, children, customInput}) => {
+const DefaultInput = ({
+  value,
+  label,
+  onChangeText,
+  children,
+  customInput,
+  onPress,
+  type,
+}) => {
   return (
     <View style={[styles.row, styles.flexCenter]}>
       {!children && (
@@ -33,8 +46,13 @@ const DefaultInput = ({value, label, onChangeText, children, customInput}) => {
               borderBottomColor: '#ddd',
             }}>
             {customInput && customInput}
-            {!customInput && (
+            {!customInput && type === 'text' && (
               <TextInput value={value} onChangeText={v => onChangeText(v)} />
+            )}
+            {type === 'date' && !customInput && (
+              <TouchableOpacity onPress={onPress}>
+                <TextInput value={format(new Date(value), 'dd/MM/yyyy')} editable={false} />
+              </TouchableOpacity>
             )}
           </View>
         </>
@@ -44,18 +62,40 @@ const DefaultInput = ({value, label, onChangeText, children, customInput}) => {
   );
 };
 
+DefaultInput.defaultProps = {
+  type: 'text'
+}
+
 export const AddNewProspectScreen = () => {
+  const dispatch = useDispatch();
+
   const mappedCarList = carList.map(car => ({
     value: car,
     label: car.name,
   }));
-  
-  const [customerName, setCustomerName] = useState('');
 
-  const [birthday, setBirthday] = useState('');
+  const [customerName, setCustomerName] = useState('');
+  const [birthday, setBirthday] = useState(new Date(1598051730000));
   const [selectedCar, setSelectedCar] = useState(mappedCarList[0]);
 
-  console.log('car options', mappedCarList);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
+  const handleBirthdayChange = (event, selectedDate) => {
+    setShowTimePicker(false);
+    setBirthday(selectedDate || birthday);
+    // setShowTimePicker(Platform.OS === 'ios');
+  };
+
+  const handleAddProspect = () => {
+    const payload = {
+      id: String(Math.random()),
+      name: customerName,
+      birthday,
+      car: selectedCar.value,
+    };
+
+    dispatch({type: actionTypes.ADD, payload});
+  };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#FFF'}}>
@@ -75,9 +115,20 @@ export const AddNewProspectScreen = () => {
           />
           <DefaultInput
             value={birthday}
-            onChangeText={setBirthday}
+            // onChangeText={setBirthday}
+            type='date'
             label="Date of Birth"
+            onPress={() => setShowTimePicker(true)}
           />
+          {showTimePicker && (
+            <DateTimePicker
+              value={birthday}
+              mode={'date'}
+              is24Hour={true}
+              display="default"
+              onChange={handleBirthdayChange}
+            />
+          )}
           <DefaultInput
             value={birthday}
             label="Car"
@@ -86,7 +137,9 @@ export const AddNewProspectScreen = () => {
                 style={{width: width * 0.7, height: 50}}
                 selectedValue={selectedCar.value}
                 onValueChange={value =>
-                  setSelectedCar(mappedCarList.find(car => car.value.id === value.id))
+                  setSelectedCar(
+                    mappedCarList.find(car => car.value.id === value.id),
+                  )
                 }>
                 {mappedCarList.map(option => (
                   <Picker.Item
@@ -99,7 +152,7 @@ export const AddNewProspectScreen = () => {
             }
           />
         </View>
-        <Button title="Save Prospect" onPress={() => console.log('pressed')} />
+        <Button title="Save Prospect" onPress={handleAddProspect} />
       </View>
     </SafeAreaView>
   );
@@ -123,4 +176,3 @@ const styles = StyleSheet.create({
     height: 200,
   },
 });
-

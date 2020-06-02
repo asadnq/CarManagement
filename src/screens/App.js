@@ -10,38 +10,42 @@ import HomeScreen from './HomeScreen';
 import {AddNewProspectScreen} from './AddNewProspectScreen';
 import {ListProspectScreen} from './ListProspectScreen';
 import {Alert} from 'react-native';
+import {Provider} from 'react-redux';
+import store from '../redux/store';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({route}) => ({
-          tabBarIcon: ({focused, color, size}) => {
-            let iconName;
+    <Provider store={store}>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={({route}) => ({
+            tabBarIcon: ({focused, color, size}) => {
+              let iconName;
 
-            if (route.name === 'Home') {
-              iconName = 'ios-home';
-            } else if (route.name === 'AddProspect') {
-              iconName = 'md-person-add'
-            } else if(route.name ==='ListProspect') {
-              iconName = 'ios-list';
-            } 
-            // You can return any component that you like here!
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-        })}
-        tabBarOptions={{
-          activeTintColor: '#2094f0',
-          inactiveTintColor: 'gray',
-        }}>
-        <Tab.Screen name="AddProspect" component={AddNewProspectScreen} />
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="ListProspect" component={ListProspectScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
+              if (route.name === 'Home') {
+                iconName = 'ios-home';
+              } else if (route.name === 'AddProspect') {
+                iconName = 'md-person-add';
+              } else if (route.name === 'ListProspect') {
+                iconName = 'ios-list';
+              }
+              // You can return any component that you like here!
+              return <Ionicons name={iconName} size={size} color={color} />;
+            },
+          })}
+          tabBarOptions={{
+            activeTintColor: '#2094f0',
+            inactiveTintColor: 'gray',
+          }}>
+          <Tab.Screen name="AddProspect" component={AddNewProspectScreen} />
+          <Tab.Screen name="Home" component={HomeScreen} />
+          <Tab.Screen name="ListProspect" component={ListProspectScreen} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useSelector} from 'react-redux';
 import {
   View,
   SafeAreaView,
@@ -18,7 +19,7 @@ const ProspectCard = ({prospect}) => {
     <View>
       <View style={[styles.card, styles.row]}>
         <View style={{width: '30%'}}>
-          <Text style={styles.prospetName}>{prospect.name}</Text>
+          <Text style={styles.prospectName}>{prospect.name}</Text>
         </View>
         <View>
           <View
@@ -41,12 +42,13 @@ const ProspectCard = ({prospect}) => {
 };
 
 export const ListProspectScreen = () => {
-  const [prospects, setProspects] = useState(dummyProspects);
-
+  // const [prospects, setProspects] = useState(dummyProspects);
+  const prospect = useSelector(state => state.prospect);
+  
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#FFF'}}>
       <ScrollView style={{paddingHorizontal: 10}}>
-        {prospects.map(prospect => {
+        {prospect.prospects.map(prospect => {
           return <ProspectCard prospect={prospect} key={prospect.id} />;
         })}
       </ScrollView>
@@ -80,7 +82,7 @@ const styles = StyleSheet.create({
     paddingVertical: width * 0.025,
     borderRadius: 5,
   },
-  prospetName: {
+  prospectName: {
     fontWeight: 'bold',
     fontSize: 16,
   },
