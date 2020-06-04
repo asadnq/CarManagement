@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
-import {useDispatch} from 'react-redux';
+import React, {useState, useLayoutEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 // import IonIcons from 'react-native-vector-icons/Ionicons';
 import {
+  ActivityIndicator,
   Alert,
   View,
   SafeAreaView,
@@ -52,7 +53,10 @@ const DefaultInput = ({
             )}
             {type === 'date' && !customInput && (
               <TouchableOpacity onPress={onPress}>
-                <TextInput value={format(new Date(value), 'dd/MM/yyyy')} editable={false} />
+                <TextInput
+                  value={format(new Date(value), 'dd/MM/yyyy')}
+                  editable={false}
+                />
               </TouchableOpacity>
             )}
           </View>
@@ -64,8 +68,14 @@ const DefaultInput = ({
 };
 
 DefaultInput.defaultProps = {
-  type: 'text'
-}
+  type: 'text',
+};
+
+const generateId = () => {
+  const max = Math.ceil(1000);
+  const min = Math.floor(1);
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
 
 export const AddNewProspectScreen = () => {
   const dispatch = useDispatch();
@@ -91,24 +101,37 @@ export const AddNewProspectScreen = () => {
     setSelectedCar(mappedCarList[0]);
     setBirthday(new Date());
     setCustomerName('');
-  }
+  };
 
   const handleAddProspect = () => {
     const payload = {
-      id: String(Math.random()),
+      id: String(generateId()),
       name: customerName,
       birthday,
       car: selectedCar.value,
     };
 
     dispatch({type: actionTypes.ADD, payload});
-    Alert.alert('save success', 'prospect successfuly added', [
-      {
-        text: 'Ok',
-        onPress: resetForm,
-      }
-    ])
   };
+
+  const {addProspectStatus} = useSelector(state => state.prospect);
+
+  useLayoutEffect(() => {
+    if (addProspectStatus === 'succeed') {
+      Alert.alert('save success', 'prospect successfuly added', [
+        {
+          text: 'Ok',
+          onPress: resetForm,
+        },
+      ]);
+    } else if (addProspectStatus === 'failed') {
+      Alert.alert('save failure', 'something went wrong :(', [
+        {
+          text: 'Ok',
+        },
+      ]);
+    }
+  }, [addProspectStatus]);
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#FFF'}}>
@@ -129,7 +152,7 @@ export const AddNewProspectScreen = () => {
           <DefaultInput
             value={birthday}
             // onChangeText={setBirthday}
-            type='date'
+            type="date"
             label="Date of Birth"
             onPress={() => setShowTimePicker(true)}
           />
@@ -165,7 +188,11 @@ export const AddNewProspectScreen = () => {
             }
           />
         </View>
-        <Button title="Save Prospect" onPress={handleAddProspect} />
+        {addProspectStatus === 'pending' ? (
+          <ActivityIndicator />
+        ) : (
+          <Button title="Save Prospect" onPress={handleAddProspect} />
+        )}
       </View>
     </SafeAreaView>
   );
