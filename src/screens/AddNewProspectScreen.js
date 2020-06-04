@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
 // import IonIcons from 'react-native-vector-icons/Ionicons';
 import {
+  Alert,
   View,
   SafeAreaView,
   StyleSheet,
@@ -86,6 +87,12 @@ export const AddNewProspectScreen = () => {
     // setShowTimePicker(Platform.OS === 'ios');
   };
 
+  const resetForm = () => {
+    setSelectedCar(mappedCarList[0]);
+    setBirthday(new Date());
+    setCustomerName('');
+  }
+
   const handleAddProspect = () => {
     const payload = {
       id: String(Math.random()),
@@ -95,6 +102,12 @@ export const AddNewProspectScreen = () => {
     };
 
     dispatch({type: actionTypes.ADD, payload});
+    Alert.alert('save success', 'prospect successfuly added', [
+      {
+        text: 'Ok',
+        onPress: resetForm,
+      }
+    ])
   };
 
   return (
