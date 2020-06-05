@@ -18,7 +18,7 @@ const ProspectCard = ({prospect}) => {
     <View>
       <View style={[styles.card, styles.row]}>
         <View style={{width: '30%'}}>
-          <Text style={styles.prospetName}>{prospect.name}</Text>
+          <Text style={styles.prospectName}>{prospect.name}</Text>
         </View>
         <View>
           <View
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     paddingVertical: width * 0.025,
     borderRadius: 5,
   },
-  prospetName: {
+  prospectName: {
     fontWeight: 'bold',
     fontSize: 16,
   },
