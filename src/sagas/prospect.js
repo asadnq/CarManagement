@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import {actionTypes} from '../redux/modules/prospect';
 
-const url = 'http://localhost:3000';
+const url = 'https://car-management-api.herokuapp.com';
 
 function addProspect(body) {
   return axios.post(`${url}/prospects`, body);
